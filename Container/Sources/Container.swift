@@ -52,9 +52,7 @@ public final class Container: Resolver {
     }
     
     public func register(modules: Module.Type...) {
-        modules.forEach { module in
-            module.register(in: self)
-        }
+        register(modules: modules)
     }
     
     public static func resolve<T>(_ type: T.Type) -> T {
@@ -74,8 +72,12 @@ public final class Container: Resolver {
     }
     
     public static func register(modules: Module.Type...) {
+        shared.register(modules: modules)
+    }
+    
+    private func register(modules: [Module.Type]) {
         modules.forEach { module in
-            module.register(in: shared)
+            module.register(in: self)
         }
     }
 }

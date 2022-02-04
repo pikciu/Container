@@ -1,13 +1,12 @@
 import Foundation
 
 protocol Factory {
-    
     func create() -> Any
 }
 
 final class PerRequestFactory: Factory {
-    let resolver: Resolver
-    let factory: (Resolver) -> Any
+    private let resolver: Resolver
+    private let factory: (Resolver) -> Any
     
     init(resolver: Resolver, factory: @escaping (Resolver) -> Any) {
         self.resolver = resolver
@@ -20,9 +19,10 @@ final class PerRequestFactory: Factory {
 }
 
 final class SharedFactory: Factory {
-    let resolver: Resolver
-    let factory: (Resolver) -> Any
-    var instance: Any?
+    private let lock = NSLock()
+    private let resolver: Resolver
+    private let factory: (Resolver) -> Any
+    private var instance: Any?
     
     init(resolver: Resolver, factory: @escaping (Resolver) -> Any) {
         self.resolver = resolver
@@ -30,6 +30,10 @@ final class SharedFactory: Factory {
     }
     
     func create() -> Any {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         if let instance = instance {
             return instance
         }
@@ -40,9 +44,10 @@ final class SharedFactory: Factory {
 }
 
 final class WeakFactory: Factory {
-    let resolver: Resolver
-    let factory: (Resolver) -> Any
-    weak var instance: AnyObject?
+    private let lock = NSLock()
+    private let resolver: Resolver
+    private let factory: (Resolver) -> Any
+    private weak var instance: AnyObject?
     
     init(resolver: Resolver, factory: @escaping (Resolver) -> Any) {
         self.resolver = resolver
@@ -50,6 +55,10 @@ final class WeakFactory: Factory {
     }
     
     func create() -> Any {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         if let instance = instance {
             return instance
         }

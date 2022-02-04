@@ -7,6 +7,11 @@
 
 import UIKit
 
+func log(function: String = #function, _ message: @autoclosure () -> Any) {
+    
+    print("\(function): \(message())")
+}
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -29,6 +34,23 @@ class ViewController: UIViewController {
         
         let testService = Container.resolve(TestService.self)
         print(testService)
+        
+        DispatchQueue(label: "queue 1").async {
+            print(Container.resolve(SharedTest.self))
+        }
+        
+        DispatchQueue(label: "queue 2").async {
+            print(Container.resolve(SharedTest.self))
+        }
+        
+        DispatchQueue(label: "queue 3").async {
+            print(Container.resolve(SharedTest.self))
+        }
+        
+        DispatchQueue(label: "queue 4").async {
+            print(Container.resolve(SharedTest.self))
+        }
+        
     }
 
 
@@ -56,11 +78,11 @@ final class Service1Impl: Service1, Service2, CustomDebugStringConvertible {
         self.type = type
         id = Service1Impl.count
         Service1Impl.count += 1
-        print("\(#function): \(self)")
+        log(self)
     }
     
     deinit {
-        print("\(#function): \(self)")
+        log(self)
     }
 }
 
@@ -88,6 +110,8 @@ struct SampleModule: Module {
         container.registerShared(Service2.self, Service1Impl(type: "shared"))
         container.register(Service1Impl(type: "per request"))
         
+        container.registerShared(SharedTest())
+        
         container.register { resolver in
             TestService(
                 service1: resolver.resolve(),
@@ -95,5 +119,16 @@ struct SampleModule: Module {
                 serviceImpl: resolver.resolve()
             )
         }
+    }
+}
+
+final class SharedTest {
+    
+    init() {
+        log(self)
+    }
+    
+    deinit {
+        log(self)
     }
 }

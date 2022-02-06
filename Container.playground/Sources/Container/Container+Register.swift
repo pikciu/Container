@@ -2,73 +2,88 @@ import Foundation
 
 public extension Container {
     
-    func registerUnique<T>(factory: @escaping (Resolver) -> T) {
+    @discardableResult
+    func registerUnique<T>(factory: @escaping (Resolver) -> T) -> Registration<T> {
         registerUnique(T.self, factory: factory)
     }
     
-    func registerShared<T>(factory: @escaping (Resolver) -> T) {
+    @discardableResult
+    func registerShared<T>(factory: @escaping (Resolver) -> T) -> Registration<T> {
         registerShared(T.self, factory: factory)
     }
     
-    func registerWeak<T>(factory: @escaping (Resolver) -> T) {
+    @discardableResult
+    func registerWeak<T>(factory: @escaping (Resolver) -> T) -> Registration<T> {
         registerWeak(T.self, factory: factory)
     }
     
-    func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerUnique(type) { _ in
             factory()
         }
     }
     
-    func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerShared(type) { _ in
             factory()
         }
     }
     
-    func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerWeak(type) { _ in
             factory()
         }
     }
     
-    func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerUnique(T.self, factory())
     }
     
-    func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    func registerShared<T>(_ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerShared(T.self, factory())
     }
     
-    func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerWeak(T.self, factory())
     }
     
-    static func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    static func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerUnique(T.self, factory())
     }
     
-    static func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    static func registerShared<T>(_ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerShared(T.self, factory())
     }
     
-    static func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    static func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerWeak(T.self, factory())
     }
     
-    static func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    static func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerUnique(type) { _ in
             factory()
         }
     }
     
-    static func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    static func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerShared(type) { _ in
             factory()
         }
     }
     
-    static func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    @discardableResult
+    static func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) -> Registration<T> {
         registerWeak(type) { _ in
             factory()
         }

@@ -16,7 +16,7 @@ public extension Resolver {
 }
 
 public final class Container: Resolver {
-    private var factories: [ObjectIdentifier : InstanceFactory] = [:]
+    private var registrations: [ObjectIdentifier : AnyRegistration] = [:]
     
     private static let shared = Container()
     
@@ -27,33 +27,42 @@ public final class Container: Resolver {
     public func resolve<T>(_ type: T.Type) -> T {
         let key = ObjectIdentifier(type)
         guard
-            let factory = factories[key],
-            let instance = factory.create() as? T
+            let registration = registrations[key],
+            let instance = registration.create() as? T
         else {
             fatalError("Instance of type: \(T.self) not found!")
         }
         return instance
     }
     
-    public func registerUnique<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        factories[ObjectIdentifier(type)] = UniqueInstanceFactory(
+    @discardableResult
+    public func registerUnique<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) -> Registration<T> {
+        let registration = Registration<T>(factory: UniqueInstanceFactory(
             resolver: self,
             factory: factory
-        )
+        ))
+        registrations[ObjectIdentifier(type)] = registration
+        return registration
     }
     
-    public func registerShared<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        factories[ObjectIdentifier(type)] = SharedInstanceFactory(
+    @discardableResult
+    public func registerShared<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) -> Registration<T> {
+        let registration = Registration<T>(factory: SharedInstanceFactory(
             resolver: self,
             factory: factory
-        )
+        ))
+        registrations[ObjectIdentifier(type)] = registration
+        return registration
     }
     
-    public func registerWeak<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        factories[ObjectIdentifier(type)] = WeakInstanceFactory(
+    @discardableResult
+    public func registerWeak<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) -> Registration<T> {
+        let registration = Registration<T>(factory: WeakInstanceFactory(
             resolver: self,
             factory: factory
-        )
+        ))
+        registrations[ObjectIdentifier(type)] = registration
+        return registration
     }
     
     public func register(modules: [Module.Type]) {
@@ -66,15 +75,18 @@ public final class Container: Resolver {
         shared.resolve(type)
     }
     
-    public static func registerUnique<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
+    @discardableResult
+    public static func registerUnique<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) -> Registration<T> {
         shared.registerUnique(type, factory: factory)
     }
     
-    public static func registerShared<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
+    @discardableResult
+    public static func registerShared<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) -> Registration<T> {
         shared.registerShared(type, factory: factory)
     }
     
-    public static func registerWeak<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
+    @discardableResult
+    public static func registerWeak<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) -> Registration<T> {
         shared.registerWeak(type, factory: factory)
     }
     

@@ -1,61 +1,4 @@
-//
-//  ViewController.swift
-//  Container
-//
-//  Created by Tomasz Pikć on 02/02/2022.
-//
-
-import UIKit
-
-func log(function: String = #function, _ message: @autoclosure () -> Any) {
-    print("\(function): \(message())")
-}
-
-class ViewController: UIViewController {
-    
-
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        Container.register(modules: [SampleModule.self])
-        
-        let s1 = Container.resolve(Service1.self)
-        let s2 = Container.resolve(Service2.self)
-        let s3 = Container.resolve(Service1Impl.self)
-        let s4 = Container.resolve(Service1.self)
-        let s5 = Container.resolve(Service2.self)
-        let s6 = Container.resolve(Service1Impl.self)
-        print(s1)
-        print(s2)
-        print(s3)
-        print(s4)
-        print(s5)
-        print(s6)
-        
-        let testService = Container.resolve(TestService.self)
-        print(testService)
-        
-        DispatchQueue(label: "queue 1").async {
-            print(Container.resolve(SharedTest.self))
-        }
-        
-        DispatchQueue(label: "queue 2").async {
-            print(Container.resolve(SharedTest.self))
-        }
-        
-        DispatchQueue(label: "queue 3").async {
-            print(Container.resolve(SharedTest.self))
-        }
-        
-        DispatchQueue(label: "queue 4").async {
-            print(Container.resolve(SharedTest.self))
-        }
-        
-    }
-
-
-}
+import Foundation
 
 protocol Service1 {
     
@@ -128,6 +71,49 @@ struct SampleModule: Module {
 }
 
 final class SharedTest {
+    
+    init() {
+        log(self)
+    }
+    
+    deinit {
+        log(self)
+    }
+}
+
+final class A {
+    let b: B
+    let c: C
+    
+    init(b: B, c: C) {
+        self.b = b
+        self.c = c
+        log(self)
+    }
+    
+    deinit {
+        log(self)
+    }
+}
+
+final class B {
+    // solution 1
+    weak var a: A?
+    
+    init() {
+        log(self)
+    }
+    
+    deinit {
+        log(self)
+    }
+}
+
+final class C {
+    // solution 2
+    var a: A {
+        Container.resolve(A.self)
+    }
     
     init() {
         log(self)

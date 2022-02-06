@@ -11,7 +11,7 @@ public extension Resolver {
 }
 
 public final class Container: Resolver {
-    private var factories: [ObjectIdentifier : Factory] = [:]
+    private var factories: [ObjectIdentifier : InstanceFactory] = [:]
     
     private static let shared = Container()
     
@@ -30,37 +30,39 @@ public final class Container: Resolver {
         return instance
     }
     
-    public func register<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        factories[ObjectIdentifier(type)] = PerRequestFactory(
+    public func registerUnique<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
+        factories[ObjectIdentifier(type)] = UniqueInstanceFactory(
             resolver: self,
             factory: factory
         )
     }
     
     public func registerShared<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        factories[ObjectIdentifier(type)] = SharedFactory(
+        factories[ObjectIdentifier(type)] = SharedInstanceFactory(
             resolver: self,
             factory: factory
         )
     }
     
     public func registerWeak<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        factories[ObjectIdentifier(type)] = WeakFactory(
+        factories[ObjectIdentifier(type)] = WeakInstanceFactory(
             resolver: self,
             factory: factory
         )
     }
     
-    public func register(modules: Module.Type...) {
-        register(modules: modules)
+    public func register(modules: [Module.Type]) {
+        modules.forEach { module in
+            module.register(in: self)
+        }
     }
     
     public static func resolve<T>(_ type: T.Type) -> T {
         shared.resolve(type)
     }
     
-    public static func register<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
-        shared.register(type, factory: factory)
+    public static func registerUnique<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
+        shared.registerUnique(type, factory: factory)
     }
     
     public static func registerShared<T>(_ type: T.Type, factory: @escaping (Resolver) -> T) {
@@ -71,13 +73,7 @@ public final class Container: Resolver {
         shared.registerWeak(type, factory: factory)
     }
     
-    public static func register(modules: Module.Type...) {
+    public static func register(modules: [Module.Type]) {
         shared.register(modules: modules)
-    }
-    
-    private func register(modules: [Module.Type]) {
-        modules.forEach { module in
-            module.register(in: self)
-        }
     }
 }

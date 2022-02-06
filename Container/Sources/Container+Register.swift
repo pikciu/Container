@@ -2,8 +2,8 @@ import Foundation
 
 public extension Container {
     
-    func register<T>(factory: @escaping (Resolver) -> T) {
-        register(T.self, factory: factory)
+    func registerUnique<T>(factory: @escaping (Resolver) -> T) {
+        registerUnique(T.self, factory: factory)
     }
     
     func registerShared<T>(factory: @escaping (Resolver) -> T) {
@@ -14,8 +14,8 @@ public extension Container {
         registerWeak(T.self, factory: factory)
     }
     
-    func register<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
-        register(type) { _ in
+    func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+        registerUnique(type) { _ in
             factory()
         }
     }
@@ -32,8 +32,8 @@ public extension Container {
         }
     }
     
-    func register<T>(_ factory: @autoclosure @escaping () -> T) {
-        register(T.self, factory())
+    func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
+        registerUnique(T.self, factory())
     }
     
     func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
@@ -44,8 +44,8 @@ public extension Container {
         registerWeak(T.self, factory())
     }
     
-    static func register<T>(_ factory: @autoclosure @escaping () -> T) {
-        register(T.self, factory())
+    static func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
+        registerUnique(T.self, factory())
     }
     
     static func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
@@ -56,8 +56,8 @@ public extension Container {
         registerWeak(T.self, factory())
     }
     
-    static func register<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
-        register(type) { _ in
+    static func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+        registerUnique(type) { _ in
             factory()
         }
     }

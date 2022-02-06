@@ -1,10 +1,10 @@
 import Foundation
 
-protocol Factory {
+protocol InstanceFactory {
     func create() -> Any
 }
 
-final class PerRequestFactory: Factory {
+final class UniqueInstanceFactory: InstanceFactory {
     private let resolver: Resolver
     private let factory: (Resolver) -> Any
     
@@ -18,7 +18,7 @@ final class PerRequestFactory: Factory {
     }
 }
 
-final class SharedFactory: Factory {
+final class SharedInstanceFactory: InstanceFactory {
     private let lock = NSLock()
     private let resolver: Resolver
     private let factory: (Resolver) -> Any
@@ -43,7 +43,7 @@ final class SharedFactory: Factory {
     }
 }
 
-final class WeakFactory: Factory {
+final class WeakInstanceFactory: InstanceFactory {
     private let lock = NSLock()
     private let resolver: Resolver
     private let factory: (Resolver) -> Any

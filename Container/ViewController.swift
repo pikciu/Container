@@ -8,16 +8,17 @@
 import UIKit
 
 func log(function: String = #function, _ message: @autoclosure () -> Any) {
-    
     print("\(function): \(message())")
 }
 
 class ViewController: UIViewController {
+    
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Container.register(modules: SampleModule.self)
+        Container.register(modules: [SampleModule.self])
         
         let s1 = Container.resolve(Service1.self)
         let s2 = Container.resolve(Service2.self)
@@ -101,6 +102,10 @@ final class TestService: CustomDebugStringConvertible {
         self.service2 = service2
         self.serviceImpl = serviceImpl
     }
+    
+    deinit {
+        log(self)
+    }
 }
 
 struct SampleModule: Module {
@@ -108,11 +113,11 @@ struct SampleModule: Module {
     static func register(in container: Container) {
         container.registerWeak(Service1.self, Service1Impl(type: "weak"))
         container.registerShared(Service2.self, Service1Impl(type: "shared"))
-        container.register(Service1Impl(type: "per request"))
+        container.registerUnique(Service1Impl(type: "unique"))
         
         container.registerShared(SharedTest())
         
-        container.register { resolver in
+        container.registerUnique { resolver in
             TestService(
                 service1: resolver.resolve(),
                 service2: resolver.resolve(),

@@ -1,5 +1,9 @@
 import Foundation
 
+func log(function: String = #function, _ message: @autoclosure () -> Any) {
+    print("\(function): \(message())")
+}
+
 protocol Service1 {
     
 }

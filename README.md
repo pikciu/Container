@@ -1,8 +1,13 @@
 # DependencyContainer
 
-## Requirements
-
 ## Installation
+
+### Swift Package Manager
+- File > Swift Packages > Add Package Dependency
+- Add `https://github.com/pikciu/Container.git`
+- Select "Up to Next Major" with "1.2.0"
+
+### CocoaPods
 
 DependencyContainer is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
@@ -11,9 +16,9 @@ it, simply add the following line to your Podfile:
 pod 'DependencyContainer'
 ```
 
-## Author
+## Usage
 
-Tomasz Pikć
+See `Examples.swift`
 
 ## License
 

@@ -1,9 +1,5 @@
 import Foundation
 
-func log(function: String = #function, _ message: @autoclosure () -> Any) {
-    print("\(function): \(message())")
-}
-
 public final class Examples {
     
     public init() {

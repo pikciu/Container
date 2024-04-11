@@ -5,7 +5,7 @@
 ### Swift Package Manager
 - File > Swift Packages > Add Package Dependency
 - Add `https://github.com/pikciu/Container.git`
-- Select "Up to Next Major" with "1.2.0"
+- Select "Up to Next Major" with "1.3.0"
 
 ### CocoaPods
 

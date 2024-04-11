@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'DependencyContainer'
-  s.version          = '1.2.0'
+  s.version          = '1.3.0'
   s.summary          = 'Simple Dependency Container for iOS Apps'
   s.homepage         = 'https://github.com/pikciu/Container'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }

@@ -1,76 +1,58 @@
 import Foundation
 
-public extension Container {
+extension Container {
     
-    func registerUnique<T>(factory: @escaping (Resolver) -> T) {
+    public func registerUnique<T>(factory: @escaping (Resolver) -> T) {
         registerUnique(T.self, factory: factory)
     }
     
-    func registerShared<T>(factory: @escaping (Resolver) -> T) {
+    public func registerShared<T>(factory: @escaping (Resolver) -> T) {
         registerShared(T.self, factory: factory)
     }
     
-    func registerWeak<T>(factory: @escaping (Resolver) -> T) {
+    public func registerWeak<T>(factory: @escaping (Resolver) -> T) {
         registerWeak(T.self, factory: factory)
     }
     
-    func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    public func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
         registerUnique(type) { _ in
             factory()
         }
     }
     
-    func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    public func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
         registerShared(type) { _ in
             factory()
         }
     }
     
-    func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
+    public func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
         registerWeak(type) { _ in
             factory()
         }
     }
     
-    func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
+    public func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
         registerUnique(T.self, factory())
     }
     
-    func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
+    public func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
         registerShared(T.self, factory())
     }
     
-    func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) {
+    public func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) {
         registerWeak(T.self, factory())
     }
     
-    static func registerUnique<T>(_ factory: @autoclosure @escaping () -> T) {
-        registerUnique(T.self, factory())
+    public func registerUnique<T: Resolvable>(_ resolvable: T.Type) {
+        registerUnique { T(with: $0) }
     }
     
-    static func registerShared<T>(_ factory: @autoclosure @escaping () -> T) {
-        registerShared(T.self, factory())
+    public func registerShared<T: Resolvable>(_ resolvable: T.Type) {
+        registerShared { T(with: $0) }
     }
     
-    static func registerWeak<T>(_ factory: @autoclosure @escaping () -> T) {
-        registerWeak(T.self, factory())
-    }
-    
-    static func registerUnique<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
-        registerUnique(type) { _ in
-            factory()
-        }
-    }
-    
-    static func registerShared<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
-        registerShared(type) { _ in
-            factory()
-        }
-    }
-    
-    static func registerWeak<T>(_ type: T.Type, _ factory: @autoclosure @escaping () -> T) {
-        registerWeak(type) { _ in
-            factory()
-        }
+    public func registerWeak<T: Resolvable>(_ resolvable: T.Type) {
+        registerWeak { T(with: $0) }
     }
 }

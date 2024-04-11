@@ -12,6 +12,10 @@ extension Container {
     public static func resolve<T>(_ type: T.Type) -> T {
         shared.resolve(type)
     }
+
+    public static func resolve<T>() -> T {
+        resolve(T.self)
+    }
     
     public static func register(modules: [Module.Type]) {
         shared.register(modules: modules)
